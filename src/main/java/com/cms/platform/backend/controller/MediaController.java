@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/media")
@@ -23,12 +24,12 @@ public class MediaController {
 
     @GetMapping
     public ResponseEntity<List<MediaDto>> getMedia(@RequestParam String siteId) {
-        return ResponseEntity.ok(mediaService.getMediaBySite(siteId));
+        return ResponseEntity.ok(mediaService.getMediaBySite(UUID.fromString(siteId)));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteMedia(@PathVariable String id) {
-        mediaService.deleteMedia(id);
+        mediaService.deleteMedia(UUID.fromString(id));
         return ResponseEntity.noContent().build();
     }
 }

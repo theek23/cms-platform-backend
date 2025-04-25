@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "sites")
@@ -15,8 +16,9 @@ import java.time.LocalDateTime;
 @Builder
 public class Site {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    @GeneratedValue
+    @Column(columnDefinition = "uuid", updatable = false, nullable = false)
+    private UUID id;
 
     @Column(nullable = false)
     private String name;

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,14 +31,14 @@ public class MediaServiceImpl implements MediaService {
     }
 
     @Override
-    public List<MediaDto> getMediaBySite(String siteId) {
+    public List<MediaDto> getMediaBySite(UUID siteId) {
         return mediaRepository.findByUserId(siteId).stream()
                 .map(m -> new MediaDto(m.getId(), m.getUrl(), m.getType().toString(), m.getSize()))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public void deleteMedia(String id) {
+    public void deleteMedia(UUID id) {
         mediaRepository.deleteById(id);
     }
 }

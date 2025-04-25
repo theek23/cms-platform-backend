@@ -7,6 +7,8 @@ import com.cms.platform.backend.service.SubscriptionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class SubscriptionServiceImpl implements SubscriptionService {
@@ -14,7 +16,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     @Override
     public SubscriptionDto getSubscriptionStatus() {
-        Subscription sub = subscriptionRepository.findByUserId("").orElseThrow(); // mock
+        Subscription sub = subscriptionRepository.findByUserId(UUID.fromString("")).orElseThrow(); // mock
         return new SubscriptionDto(sub.getId(), sub.getStripeCustomerId(), sub.getStripeSubscriptionId(), sub.getStatus().toString(), sub.getPlanName(), sub.getSiteLimit());
     }
 

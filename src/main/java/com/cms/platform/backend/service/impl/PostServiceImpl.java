@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,20 +34,20 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostDto> getPostsBySite(String siteId) {
+    public List<PostDto> getPostsBySite(UUID siteId) {
         return postRepository.findBySiteId(siteId).stream()
                 .map(post -> new PostDto(post.getId(), post.getTitle(), post.getContent(), post.getSeoTitle(), post.getSeoDescription(), post.getStatus().toString(), post.getSite().getId()))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public PostDto getPostById(String id) {
+    public PostDto getPostById(UUID id) {
         Post post = postRepository.findById(id).orElseThrow(() -> new RuntimeException("Post not found"));
         return new PostDto(post.getId(), post.getTitle(), post.getContent(), post.getSeoTitle(), post.getSeoDescription(), post.getStatus().toString(), post.getSite().getId());
     }
 
     @Override
-    public PostDto updatePost(String id, PostDto dto) {
+    public PostDto updatePost(UUID id, PostDto dto) {
         Post post = postRepository.findById(id).orElseThrow(() -> new RuntimeException("Post not found"));
         post.setTitle(dto.getTitle());
         post.setContent(dto.getContent());
@@ -58,7 +59,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void deletePost(String id) {
+    public void deletePost(UUID id) {
         postRepository.deleteById(id);
     }
 }

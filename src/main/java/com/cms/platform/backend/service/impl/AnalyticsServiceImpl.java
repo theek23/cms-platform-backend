@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -16,7 +17,7 @@ public class AnalyticsServiceImpl implements AnalyticsService {
     private final AnalyticsRepository analyticsRepository;
 
     @Override
-    public List<AnalyticsDto> getAnalyticsByPost(String postId) {
+    public List<AnalyticsDto> getAnalyticsByPost(UUID postId) {
         return analyticsRepository.findByPostId(postId).stream()
                 .map(a -> new AnalyticsDto(a.getId(), a.getPost().getId(), a.getSource(), a.getViews()))
                 .collect(Collectors.toList());

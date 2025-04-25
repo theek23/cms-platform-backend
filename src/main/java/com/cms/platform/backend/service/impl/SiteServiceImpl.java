@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,13 +35,13 @@ public class SiteServiceImpl implements SiteService {
     }
 
     @Override
-    public SiteDto getSiteById(String id) {
+    public SiteDto getSiteById(UUID id) {
         Site site = siteRepository.findById(id).orElseThrow(() -> new RuntimeException("Site not found"));
         return new SiteDto(site.getId(), site.getName(), site.getCustomDomain(), site.getTheme(), site.getStatus().toString());
     }
 
     @Override
-    public SiteDto updateSite(String id, SiteDto siteDto) {
+    public SiteDto updateSite(UUID id, SiteDto siteDto) {
         Site site = siteRepository.findById(id).orElseThrow(() -> new RuntimeException("Site not found"));
         site.setName(siteDto.getName());
         site.setCustomDomain(siteDto.getCustomDomain());
@@ -51,7 +52,7 @@ public class SiteServiceImpl implements SiteService {
     }
 
     @Override
-    public void deleteSite(String id) {
+    public void deleteSite(UUID id) {
         siteRepository.deleteById(id);
     }
 }

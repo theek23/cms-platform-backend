@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/sites")
@@ -27,17 +28,17 @@ public class SiteController {
 
     @GetMapping("/{id}")
     public ResponseEntity<SiteDto> getSite(@PathVariable String id) {
-        return ResponseEntity.ok(siteService.getSiteById(id));
+        return ResponseEntity.ok(siteService.getSiteById(UUID.fromString(id)));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<SiteDto> updateSite(@PathVariable String id, @RequestBody SiteDto siteDto) {
-        return ResponseEntity.ok(siteService.updateSite(id, siteDto));
+        return ResponseEntity.ok(siteService.updateSite(UUID.fromString(id), siteDto));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteSite(@PathVariable String id) {
-        siteService.deleteSite(id);
+        siteService.deleteSite(UUID.fromString(id));
         return ResponseEntity.noContent().build();
     }
 }

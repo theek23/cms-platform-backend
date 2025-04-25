@@ -7,6 +7,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "posts")
@@ -16,8 +17,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class Post {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    @GeneratedValue
+    @Column(columnDefinition = "uuid", updatable = false, nullable = false)
+    private UUID id;
 
     private String title;
 

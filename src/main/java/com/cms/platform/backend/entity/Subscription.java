@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "subscriptions")
@@ -14,8 +15,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class Subscription {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    @GeneratedValue
+    @Column(columnDefinition = "uuid", updatable = false, nullable = false)
+    private UUID id;
 
     @Column(nullable = false)
     private String stripeCustomerId;

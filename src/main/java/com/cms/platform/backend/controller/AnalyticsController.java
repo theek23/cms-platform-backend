@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/analytics")
@@ -17,6 +18,6 @@ public class AnalyticsController {
 
     @GetMapping("/post/{postId}")
     public ResponseEntity<List<AnalyticsDto>> getAnalytics(@PathVariable String postId) {
-        return ResponseEntity.ok(analyticsService.getAnalyticsByPost(postId));
+        return ResponseEntity.ok(analyticsService.getAnalyticsByPost(UUID.fromString(postId)));
     }
 }
