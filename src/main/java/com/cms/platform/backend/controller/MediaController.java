@@ -22,12 +22,12 @@ public class MediaController {
     }
 
     @GetMapping
-    public ResponseEntity<List<MediaDto>> getMedia(@RequestParam Long siteId) {
+    public ResponseEntity<List<MediaDto>> getMedia(@RequestParam String siteId) {
         return ResponseEntity.ok(mediaService.getMediaBySite(siteId));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteMedia(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteMedia(@PathVariable String id) {
         mediaService.deleteMedia(id);
         return ResponseEntity.noContent().build();
     }

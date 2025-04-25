@@ -7,7 +7,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SiteDto {
-    private Long id;
+    private String id;
     private String name;
     private String customDomain;
     private String theme;

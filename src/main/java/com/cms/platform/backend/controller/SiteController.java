@@ -26,17 +26,17 @@ public class SiteController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<SiteDto> getSite(@PathVariable Long id) {
+    public ResponseEntity<SiteDto> getSite(@PathVariable String id) {
         return ResponseEntity.ok(siteService.getSiteById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<SiteDto> updateSite(@PathVariable Long id, @RequestBody SiteDto siteDto) {
+    public ResponseEntity<SiteDto> updateSite(@PathVariable String id, @RequestBody SiteDto siteDto) {
         return ResponseEntity.ok(siteService.updateSite(id, siteDto));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteSite(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteSite(@PathVariable String id) {
         siteService.deleteSite(id);
         return ResponseEntity.noContent().build();
     }

@@ -14,7 +14,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     @Override
     public SubscriptionDto getSubscriptionStatus() {
-        Subscription sub = subscriptionRepository.findByUserId(1L).orElseThrow(); // mock
+        Subscription sub = subscriptionRepository.findByUserId("").orElseThrow(); // mock
         return new SubscriptionDto(sub.getId(), sub.getStripeCustomerId(), sub.getStripeSubscriptionId(), sub.getStatus().toString(), sub.getPlanName(), sub.getSiteLimit());
     }
 

@@ -21,22 +21,22 @@ public class PostController {
     }
 
     @GetMapping
-    public ResponseEntity<List<PostDto>> getPosts(@RequestParam Long siteId) {
+    public ResponseEntity<List<PostDto>> getPosts(@RequestParam String siteId) {
         return ResponseEntity.ok(postService.getPostsBySite(siteId));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PostDto> getPost(@PathVariable Long id) {
+    public ResponseEntity<PostDto> getPost(@PathVariable String id) {
         return ResponseEntity.ok(postService.getPostById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PostDto> updatePost(@PathVariable Long id, @RequestBody PostDto postDto) {
+    public ResponseEntity<PostDto> updatePost(@PathVariable String id, @RequestBody PostDto postDto) {
         return ResponseEntity.ok(postService.updatePost(id, postDto));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePost(@PathVariable Long id) {
+    public ResponseEntity<Void> deletePost(@PathVariable String id) {
         postService.deletePost(id);
         return ResponseEntity.noContent().build();
     }

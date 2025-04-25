@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface MediaService {
     MediaDto uploadMedia(MultipartFile file);
-    List<MediaDto> getMediaBySite(Long siteId);
-    void deleteMedia(Long id);
+    List<MediaDto> getMediaBySite(String siteId);
+    void deleteMedia(String id);
 }

@@ -16,7 +16,7 @@ public class AnalyticsServiceImpl implements AnalyticsService {
     private final AnalyticsRepository analyticsRepository;
 
     @Override
-    public List<AnalyticsDto> getAnalyticsByPost(Long postId) {
+    public List<AnalyticsDto> getAnalyticsByPost(String postId) {
         return analyticsRepository.findByPostId(postId).stream()
                 .map(a -> new AnalyticsDto(a.getId(), a.getPost().getId(), a.getSource(), a.getViews()))
                 .collect(Collectors.toList());

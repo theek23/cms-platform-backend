@@ -7,8 +7,8 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AnalyticsDto {
-    private Long id;
-    private Long postId;
+    private String id;
+    private String postId;
     private String source;
     private Integer views;
 }

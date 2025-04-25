@@ -7,7 +7,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MediaDto {
-    private Long id;
+    private String id;
     private String url;
     private String type;
     private Long size;

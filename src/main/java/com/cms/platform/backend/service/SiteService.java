@@ -6,7 +6,7 @@ import java.util.List;
 public interface SiteService {
     SiteDto createSite(SiteDto siteDto);
     List<SiteDto> getSites();
-    SiteDto getSiteById(Long id);
-    SiteDto updateSite(Long id, SiteDto siteDto);
-    void deleteSite(Long id);
+    SiteDto getSiteById(String id);
+    SiteDto updateSite(String id, SiteDto siteDto);
+    void deleteSite(String id);
 }

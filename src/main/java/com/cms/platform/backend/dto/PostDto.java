@@ -7,11 +7,11 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostDto {
-    private Long id;
+    private String id;
     private String title;
     private String content;
     private String seoTitle;
     private String seoDescription;
     private String status;
-    private Long siteId;
+    private String siteId;
 }

@@ -7,7 +7,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SubscriptionDto {
-    private Long id;
+    private String id;
     private String stripeCustomerId;
     private String stripeSubscriptionId;
     private String status;

@@ -34,13 +34,13 @@ public class SiteServiceImpl implements SiteService {
     }
 
     @Override
-    public SiteDto getSiteById(Long id) {
+    public SiteDto getSiteById(String id) {
         Site site = siteRepository.findById(id).orElseThrow(() -> new RuntimeException("Site not found"));
         return new SiteDto(site.getId(), site.getName(), site.getCustomDomain(), site.getTheme(), site.getStatus().toString());
     }
 
     @Override
-    public SiteDto updateSite(Long id, SiteDto siteDto) {
+    public SiteDto updateSite(String id, SiteDto siteDto) {
         Site site = siteRepository.findById(id).orElseThrow(() -> new RuntimeException("Site not found"));
         site.setName(siteDto.getName());
         site.setCustomDomain(siteDto.getCustomDomain());
@@ -51,7 +51,7 @@ public class SiteServiceImpl implements SiteService {
     }
 
     @Override
-    public void deleteSite(Long id) {
+    public void deleteSite(String id) {
         siteRepository.deleteById(id);
     }
 }

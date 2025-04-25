@@ -16,8 +16,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class Post {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
 
     private String title;
 

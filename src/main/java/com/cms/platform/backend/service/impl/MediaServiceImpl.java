@@ -24,20 +24,20 @@ public class MediaServiceImpl implements MediaService {
         media.setUrl("https://dummy-s3-url.com/" + file.getOriginalFilename());
         media.setType(com.cms.platform.backend.entity.enums.MediaType.IMAGE);
         media.setSize(file.getSize());
-        media.setUser(userRepository.findById(1L).orElseThrow()); // mock user
+        media.setUser(userRepository.findById("").orElseThrow()); // mock user
         mediaRepository.save(media);
         return new MediaDto(media.getId(), media.getUrl(), media.getType().toString(), media.getSize());
     }
 
     @Override
-    public List<MediaDto> getMediaBySite(Long siteId) {
+    public List<MediaDto> getMediaBySite(String siteId) {
         return mediaRepository.findByUserId(siteId).stream()
                 .map(m -> new MediaDto(m.getId(), m.getUrl(), m.getType().toString(), m.getSize()))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public void deleteMedia(Long id) {
+    public void deleteMedia(String id) {
         mediaRepository.deleteById(id);
     }
 }

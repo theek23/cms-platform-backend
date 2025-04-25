@@ -16,7 +16,7 @@ public class AnalyticsController {
     private final AnalyticsService analyticsService;
 
     @GetMapping("/post/{postId}")
-    public ResponseEntity<List<AnalyticsDto>> getAnalytics(@PathVariable Long postId) {
+    public ResponseEntity<List<AnalyticsDto>> getAnalytics(@PathVariable String postId) {
         return ResponseEntity.ok(analyticsService.getAnalyticsByPost(postId));
     }
 }
