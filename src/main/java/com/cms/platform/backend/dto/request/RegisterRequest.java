@@ -1,4 +1,4 @@
-package com.cms.platform.backend.dto;
+package com.cms.platform.backend.dto.request;
 
 import lombok.*;
 

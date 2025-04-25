@@ -1,0 +1,31 @@
+package com.cms.platform.backend.service.impl;
+
+import com.cms.platform.backend.dto.UserDto;
+import com.cms.platform.backend.entity.User;
+import com.cms.platform.backend.repository.UserRepository;
+import com.cms.platform.backend.service.UserService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+@Service
+@RequiredArgsConstructor
+public class UserServiceImpl implements UserService {
+    private final UserRepository userRepository;
+
+    @Override
+    public UserDto getProfile() {
+        // Mock current user
+        User user = userRepository.findById(1L).orElseThrow(() -> new RuntimeException("User not found"));
+        return new UserDto(user.getId(), user.getUsername(), user.getEmail(), user.getRole());
+    }
+
+    @Override
+    public UserDto updateProfile(UserDto userDto) {
+        User user = userRepository.findById(userDto.getId()).orElseThrow(() -> new RuntimeException("User not found"));
+        user.setUsername(userDto.getUsername());
+        user.setEmail(userDto.getEmail());
+        userRepository.save(user);
+        return new UserDto(user.getId(), user.getUsername(), user.getEmail(), user.getRole());
+    }
+}
+

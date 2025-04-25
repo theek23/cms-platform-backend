@@ -1,5 +1,6 @@
-package com.cms.platform.backend.dto;
+package com.cms.platform.backend.dto.request;
 
+import com.cms.platform.backend.dto.UserDto;
 import lombok.*;
 
 @Getter

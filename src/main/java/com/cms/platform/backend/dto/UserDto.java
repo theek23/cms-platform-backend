@@ -1,7 +1,7 @@
 package com.cms.platform.backend.dto;
 
+import com.cms.platform.backend.entity.enums.Roles;
 import lombok.*;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -11,5 +11,5 @@ public class UserDto {
     private Long id;
     private String username;
     private String email;
-    private Set<String> roles;
+    private Roles role;
 }

@@ -1,5 +1,6 @@
 package com.cms.platform.backend.entity;
 
+import com.cms.platform.backend.entity.enums.Roles;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,10 +21,13 @@ public class User {
     @Column(unique = true, nullable = false)
     private String email;
 
+    @Column(unique = true, nullable = false)
+    private String username;
+
     @Column(nullable = false)
     private String password;
 
-    private String role;
+    private Roles role;
 
     private String plan;
 
