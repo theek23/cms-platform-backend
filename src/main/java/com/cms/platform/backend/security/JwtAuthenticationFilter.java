@@ -14,6 +14,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -32,11 +33,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             if (jwtProvider.validateToken(token)) {
                 String email = jwtProvider.getEmailFromToken(token);
+                String role = jwtProvider.getRoleFromToken(token);
+
                 User user = userRepository.findByEmail(email).orElse(null);
 
                 if (user != null) {
-                    UsernamePasswordAuthenticationToken authToken =
-                            new UsernamePasswordAuthenticationToken(user, null, null);
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                            user, null, List.of(() -> "ROLE_" + role)  // set Spring Security role
+                    );
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
@@ -44,4 +48,5 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
         filterChain.doFilter(request, response);
     }
+
 }
