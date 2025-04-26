@@ -1,5 +1,6 @@
 package com.cms.platform.backend.controller;
 
+import com.cms.platform.backend.dto.UpdateUserDto;
 import com.cms.platform.backend.dto.UserDto;
 import com.cms.platform.backend.entity.User;
 import com.cms.platform.backend.service.UserService;
@@ -19,13 +20,14 @@ public class UserController {
     @GetMapping("/me")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<UserDto> getProfile(@AuthenticationPrincipal User user) {
-        UserDto userDto = new UserDto(user.getId(), user.getUsername(), user.getEmail(), user.getRole());
+        UserDto userDto = new UserDto(user.getId(), user.getUsername(), user.getEmail(),user.getFullName(), user.getPhone(), user.getRole());
         return ResponseEntity.ok(userService.getProfile(userDto));
     }
 
     @PutMapping("/me")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<UserDto> updateProfile(@AuthenticationPrincipal User user, @RequestBody UserDto userDto) {
+    public ResponseEntity<UserDto> updateProfile(@AuthenticationPrincipal User user, @RequestBody UpdateUserDto updateUserDto) {
+        UserDto userDto = new UserDto(user.getId(), user.getUsername(), user.getEmail(),updateUserDto.getFullName(), updateUserDto.getPhone(), user.getRole());
         return ResponseEntity.ok(userService.updateProfile(userDto));
     }
 }
