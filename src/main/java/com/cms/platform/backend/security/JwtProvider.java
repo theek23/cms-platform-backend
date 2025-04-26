@@ -1,5 +1,6 @@
 package com.cms.platform.backend.security;
 
+import com.cms.platform.backend.entity.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,9 +22,11 @@ public class JwtProvider {
         return Keys.hmacShaKeyFor(jwtSecret.getBytes());
     }
 
-    public String generateToken(String email) {
+    public String generateToken(User user) {
         return Jwts.builder()
-                .setSubject(email)
+                .setSubject(user.getEmail())
+                .claim("userId", user.getId().toString())
+                .claim("role", user.getRole().name())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS512)
@@ -49,5 +52,23 @@ public class JwtProvider {
         } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
+    }
+
+    public String getRoleFromToken(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .get("role", String.class);
+    }
+
+    public String getUserIdFromToken(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .get("userId", String.class);
     }
 }

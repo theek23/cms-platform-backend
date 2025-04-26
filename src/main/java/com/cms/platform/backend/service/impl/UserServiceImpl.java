@@ -13,9 +13,8 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
-    public UserDto getProfile() {
-        // Mock current user
-        User user = userRepository.findById("").orElseThrow(() -> new RuntimeException("User not found"));
+    public UserDto getProfile(User user) {
+        userRepository.findById(user.getId()).orElseThrow(() -> new RuntimeException("User not found"));
         return new UserDto(user.getId(), user.getUsername(), user.getEmail(), user.getRole());
     }
 
