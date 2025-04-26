@@ -13,7 +13,7 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
 jwt:
-  secret: hs512securesecretkeyforcmsplatformprojectthatmustbeatleast64characterslong!!!
+  secret: your_very_secret_key
   expiration: 3600000
 
 stripe:
