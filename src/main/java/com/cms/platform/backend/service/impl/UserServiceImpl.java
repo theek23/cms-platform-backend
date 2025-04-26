@@ -13,7 +13,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
-    public UserDto getProfile(User user) {
+    public UserDto getProfile(UserDto user) {
         userRepository.findById(user.getId()).orElseThrow(() -> new RuntimeException("User not found"));
         return new UserDto(user.getId(), user.getUsername(), user.getEmail(), user.getRole());
     }
@@ -24,6 +24,12 @@ public class UserServiceImpl implements UserService {
         user.setUsername(userDto.getUsername());
         user.setEmail(userDto.getEmail());
         userRepository.save(user);
+        return new UserDto(user.getId(), user.getUsername(), user.getEmail(), user.getRole());
+    }
+
+    @Override
+    public UserDto getUserByEmail(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
         return new UserDto(user.getId(), user.getUsername(), user.getEmail(), user.getRole());
     }
 }

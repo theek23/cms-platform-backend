@@ -2,7 +2,9 @@ package com.cms.platform.backend.controller;
 
 import com.cms.platform.backend.dto.UserDto;
 import com.cms.platform.backend.entity.User;
+import com.cms.platform.backend.security.JwtProvider;
 import com.cms.platform.backend.service.UserService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -12,14 +14,17 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearerAuth") // ⬅️ ADD THIS
 public class UserController {
 
     private final UserService userService;
+    private final JwtProvider jwtProvider;
 
     @GetMapping("/me")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<UserDto> getProfile(@AuthenticationPrincipal User user) {
-        return ResponseEntity.ok(userService.getProfile(user));
+        UserDto userDto = new UserDto(user.getId(), user.getUsername(), user.getEmail(), user.getRole());
+        return ResponseEntity.ok(userService.getProfile(userDto));
     }
 
     @PutMapping("/me")
