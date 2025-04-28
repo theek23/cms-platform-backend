@@ -7,6 +7,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -33,13 +34,22 @@ public class Post {
     @Enumerated(EnumType.STRING)
     private PostStatus status;
 
-    @ManyToOne
-    @JoinColumn(name = "site_id", nullable = false)
-    private Site site;
+    private Number views;
+
+    @ElementCollection
+    private List<String> tags;
+
+    private String thumbnail;
+
+    private String author;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
+    @ManyToOne
+    @JoinColumn(name = "site_id", nullable = false)
+    private Site site;
 }

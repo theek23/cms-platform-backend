@@ -1,8 +1,11 @@
 package com.cms.platform.backend.service.impl;
 
 import com.cms.platform.backend.dto.SiteDto;
+import com.cms.platform.backend.dto.UserDto;
 import com.cms.platform.backend.entity.Site;
+import com.cms.platform.backend.entity.User;
 import com.cms.platform.backend.repository.SiteRepository;
+import com.cms.platform.backend.repository.UserRepository;
 import com.cms.platform.backend.service.SiteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,29 +18,57 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class SiteServiceImpl implements SiteService {
     private final SiteRepository siteRepository;
+    private final UserRepository userRepository;
 
     @Override
     public SiteDto createSite(SiteDto siteDto) {
         Site site = new Site();
         site.setName(siteDto.getName());
+        site.setSlug(siteDto.getSlug());
         site.setCustomDomain(siteDto.getCustomDomain());
         site.setTheme(siteDto.getTheme());
-        site.setStatus(Enum.valueOf(com.cms.platform.backend.entity.enums.SiteStatus.class, siteDto.getStatus()));
+        site.setStatus(siteDto.getStatus());
+        site.setCategory(siteDto.getCategory());
+        // Fetch User by ID from DB (example)
+        User user = userRepository.findById(siteDto.getUserDto().getId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        site.setUser(user);
+
         siteRepository.save(site);
         return siteDto;
     }
 
+
     @Override
     public List<SiteDto> getSites() {
         return siteRepository.findAll().stream()
-                .map(site -> new SiteDto(site.getId(), site.getName(), site.getCustomDomain(), site.getTheme(), site.getStatus().toString()))
+                .map(site -> new SiteDto(
+                        site.getId(),
+                        site.getName(),
+                        site.getSlug(),
+                        site.getCustomDomain(),
+                        site.getTheme(),
+                        site.getCategory(),
+                        site.getStatus(),
+                        mapToUserDto(site.getUser()) // <-- use mapper
+                ))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public SiteDto getSiteById(UUID id) {
-        Site site = siteRepository.findById(id).orElseThrow(() -> new RuntimeException("Site not found"));
-        return new SiteDto(site.getId(), site.getName(), site.getCustomDomain(), site.getTheme(), site.getStatus().toString());
+    public List<SiteDto> getSitesById(UUID id) {
+        return siteRepository.findByUser_Id(id).stream()
+                .map(site -> new SiteDto(
+                        site.getId(),
+                        site.getName(),
+                        site.getSlug(),
+                        site.getCustomDomain(),
+                        site.getTheme(),
+                        site.getCategory(),
+                        site.getStatus(),
+                        mapToUserDto(site.getUser()) // <-- use mapper
+                ))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -46,7 +77,7 @@ public class SiteServiceImpl implements SiteService {
         site.setName(siteDto.getName());
         site.setCustomDomain(siteDto.getCustomDomain());
         site.setTheme(siteDto.getTheme());
-        site.setStatus(Enum.valueOf(com.cms.platform.backend.entity.enums.SiteStatus.class, siteDto.getStatus()));
+        site.setStatus(siteDto.getStatus());
         siteRepository.save(site);
         return siteDto;
     }
@@ -55,4 +86,18 @@ public class SiteServiceImpl implements SiteService {
     public void deleteSite(UUID id) {
         siteRepository.deleteById(id);
     }
+
+    private UserDto mapToUserDto(User user) {
+        if (user == null) return null;
+
+        return new UserDto(
+                user.getId(),
+                user.getUsername(),
+                user.getEmail(),
+                user.getFullName(),
+                user.getPhone(),
+                user.getRole()
+        );
+    }
+
 }

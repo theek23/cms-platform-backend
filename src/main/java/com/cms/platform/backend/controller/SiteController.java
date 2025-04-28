@@ -1,9 +1,13 @@
 package com.cms.platform.backend.controller;
 
 import com.cms.platform.backend.dto.SiteDto;
+import com.cms.platform.backend.dto.UserDto;
+import com.cms.platform.backend.entity.User;
 import com.cms.platform.backend.service.SiteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,7 +21,9 @@ public class SiteController {
     private final SiteService siteService;
 
     @PostMapping
-    public ResponseEntity<SiteDto> createSite(@RequestBody SiteDto siteDto) {
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<SiteDto> createSite(@RequestBody SiteDto siteDto, @AuthenticationPrincipal UserDto user) {
+        siteDto.setUserDto(user);
         return ResponseEntity.ok(siteService.createSite(siteDto));
     }
 
@@ -26,9 +32,10 @@ public class SiteController {
         return ResponseEntity.ok(siteService.getSites());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<SiteDto> getSite(@PathVariable String id) {
-        return ResponseEntity.ok(siteService.getSiteById(UUID.fromString(id)));
+    @GetMapping("/current")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<List<SiteDto>> getSitesByUserId(@AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(siteService.getSitesById((user.getId())));
     }
 
     @PutMapping("/{id}")

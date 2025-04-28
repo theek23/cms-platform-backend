@@ -6,5 +6,5 @@ import java.util.List;
 import java.util.UUID;
 
 public interface SiteRepository extends JpaRepository<Site, UUID> {
-    List<Site> findByUserId(UUID userId);
+    List<Site> findByUser_Id(UUID userId);
 }
