@@ -1,5 +1,6 @@
 package com.cms.platform.backend.controller;
 
+import static com.cms.platform.backend.utils.UserMapper.toDto;
 import com.cms.platform.backend.dto.SiteDto;
 import com.cms.platform.backend.dto.UserDto;
 import com.cms.platform.backend.entity.User;
@@ -22,8 +23,8 @@ public class SiteController {
 
     @PostMapping
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<SiteDto> createSite(@RequestBody SiteDto siteDto, @AuthenticationPrincipal UserDto user) {
-        siteDto.setUserDto(user);
+    public ResponseEntity<SiteDto> createSite(@RequestBody SiteDto siteDto, @AuthenticationPrincipal User user) {
+        siteDto.setUserDto(toDto(user));
         return ResponseEntity.ok(siteService.createSite(siteDto));
     }
 
@@ -47,5 +48,17 @@ public class SiteController {
     public ResponseEntity<Void> deleteSite(@PathVariable String id) {
         siteService.deleteSite(UUID.fromString(id));
         return ResponseEntity.noContent().build();
+    }
+    private UserDto mapToUserDto(User user) {
+        if (user == null) return null;
+
+        return new UserDto(
+                user.getId(),
+                user.getUsername(),
+                user.getEmail(),
+                user.getFullName(),
+                user.getPhone(),
+                user.getRole()
+        );
     }
 }

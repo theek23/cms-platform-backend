@@ -1,7 +1,6 @@
 package com.cms.platform.backend.service.impl;
 
 import com.cms.platform.backend.dto.SiteDto;
-import com.cms.platform.backend.dto.UserDto;
 import com.cms.platform.backend.entity.Site;
 import com.cms.platform.backend.entity.User;
 import com.cms.platform.backend.repository.SiteRepository;
@@ -9,6 +8,7 @@ import com.cms.platform.backend.repository.UserRepository;
 import com.cms.platform.backend.service.SiteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import static com.cms.platform.backend.utils.UserMapper.toDto;
 
 import java.util.List;
 import java.util.UUID;
@@ -50,7 +50,7 @@ public class SiteServiceImpl implements SiteService {
                         site.getTheme(),
                         site.getCategory(),
                         site.getStatus(),
-                        mapToUserDto(site.getUser()) // <-- use mapper
+                        toDto(site.getUser()) // <-- use mapper
                 ))
                 .collect(Collectors.toList());
     }
@@ -66,7 +66,7 @@ public class SiteServiceImpl implements SiteService {
                         site.getTheme(),
                         site.getCategory(),
                         site.getStatus(),
-                        mapToUserDto(site.getUser()) // <-- use mapper
+                        toDto(site.getUser()) // <-- use mapper
                 ))
                 .collect(Collectors.toList());
     }
@@ -86,18 +86,4 @@ public class SiteServiceImpl implements SiteService {
     public void deleteSite(UUID id) {
         siteRepository.deleteById(id);
     }
-
-    private UserDto mapToUserDto(User user) {
-        if (user == null) return null;
-
-        return new UserDto(
-                user.getId(),
-                user.getUsername(),
-                user.getEmail(),
-                user.getFullName(),
-                user.getPhone(),
-                user.getRole()
-        );
-    }
-
 }

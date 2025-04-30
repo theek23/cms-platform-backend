@@ -1,6 +1,5 @@
 package com.cms.platform.backend.dto;
 
-import com.cms.platform.backend.entity.User;
 import com.cms.platform.backend.entity.enums.SiteCategory;
 import com.cms.platform.backend.entity.enums.SiteStatus;
 import lombok.*;
