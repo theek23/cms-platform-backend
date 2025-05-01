@@ -2,13 +2,21 @@ package com.cms.platform.backend.service.impl;
 
 import com.cms.platform.backend.dto.MediaDto;
 import com.cms.platform.backend.entity.Media;
+import com.cms.platform.backend.entity.User;
+import com.cms.platform.backend.entity.enums.MediaType;
 import com.cms.platform.backend.repository.MediaRepository;
-import com.cms.platform.backend.repository.UserRepository;
 import com.cms.platform.backend.service.MediaService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.GetUrlRequest;
+import static com.cms.platform.backend.utils.UserMapper.toDto;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -16,24 +24,48 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class MediaServiceImpl implements MediaService {
+    private final S3Client s3Client;
     private final MediaRepository mediaRepository;
-    private final UserRepository userRepository;
+
+    @Value("${aws.s3.bucket}")
+    private String bucket;
 
     @Override
-    public MediaDto uploadMedia(MultipartFile file) {
-        Media media = new Media();
-        media.setUrl("https://dummy-s3-url.com/" + file.getOriginalFilename());
-        media.setType(com.cms.platform.backend.entity.enums.MediaType.IMAGE);
-        media.setSize(file.getSize());
-        media.setUser(userRepository.findById("").orElseThrow()); // mock user
-        mediaRepository.save(media);
-        return new MediaDto(media.getId(), media.getUrl(), media.getType().toString(), media.getSize());
+    public MediaDto uploadMedia(MultipartFile file, User user) {
+        try {
+            String key = UUID.randomUUID() + "_" + file.getOriginalFilename();
+
+            PutObjectRequest putRequest = PutObjectRequest.builder()
+                    .bucket(bucket)
+                    .key(key)
+                    .contentType(file.getContentType())
+                    .build();
+
+            s3Client.putObject(putRequest, RequestBody.fromBytes(file.getBytes()));
+
+            String fileUrl = s3Client.utilities().getUrl(GetUrlRequest.builder()
+                    .bucket(bucket)
+                    .key(key)
+                    .build()).toExternalForm();
+
+            Media media = new Media();
+            media.setUrl(fileUrl);
+            media.setType(MediaType.IMAGE); // You can detect this dynamically
+            media.setSize(file.getSize());
+            media.setUser(user);
+            mediaRepository.save(media);
+
+            return new MediaDto(media.getId(), media.getUrl(), media.getType().toString(), media.getSize(), toDto(media.getUser()));
+
+        } catch (IOException e) {
+            throw new RuntimeException("S3 upload failed", e);
+        }
     }
 
     @Override
-    public List<MediaDto> getMediaBySite(UUID siteId) {
-        return mediaRepository.findByUserId(siteId).stream()
-                .map(m -> new MediaDto(m.getId(), m.getUrl(), m.getType().toString(), m.getSize()))
+    public List<MediaDto> getMediaByUser(User user) {
+        return mediaRepository.findByUserId(user.getId()).stream()
+                .map(m -> new MediaDto(m.getId(), m.getUrl(), m.getType().toString(), m.getSize(), toDto(m.getUser())))
                 .collect(Collectors.toList());
     }
 
