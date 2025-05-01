@@ -33,24 +33,30 @@ public class MediaServiceImpl implements MediaService {
     @Override
     public MediaDto uploadMedia(MultipartFile file, User user) {
         try {
-            String key = UUID.randomUUID() + "_" + file.getOriginalFilename();
+            // Create folder path using userId
+            String folderPath = user.getId().toString() + "/";
+            String key = folderPath + UUID.randomUUID() + "_" + file.getOriginalFilename();
 
+            // Create the PutObjectRequest with the full path
             PutObjectRequest putRequest = PutObjectRequest.builder()
                     .bucket(bucket)
                     .key(key)
                     .contentType(file.getContentType())
                     .build();
 
+            // Upload file to S3
             s3Client.putObject(putRequest, RequestBody.fromBytes(file.getBytes()));
 
+            // Get the file URL
             String fileUrl = s3Client.utilities().getUrl(GetUrlRequest.builder()
                     .bucket(bucket)
                     .key(key)
                     .build()).toExternalForm();
 
+            // Save media metadata to database
             Media media = new Media();
             media.setUrl(fileUrl);
-            media.setType(MediaType.IMAGE); // You can detect this dynamically
+            media.setType(MediaType.IMAGE);
             media.setSize(file.getSize());
             media.setUser(user);
             mediaRepository.save(media);
