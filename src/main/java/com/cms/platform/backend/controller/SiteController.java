@@ -25,6 +25,7 @@ public class SiteController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<SiteDto> createSite(@RequestBody SiteDto siteDto, @AuthenticationPrincipal User user) {
         siteDto.setUserDto(toDto(user));
+        System.out.println(siteDto.getStatus());
         return ResponseEntity.ok(siteService.createSite(siteDto));
     }
 
@@ -48,17 +49,5 @@ public class SiteController {
     public ResponseEntity<Void> deleteSite(@PathVariable String id) {
         siteService.deleteSite(UUID.fromString(id));
         return ResponseEntity.noContent().build();
-    }
-    private UserDto mapToUserDto(User user) {
-        if (user == null) return null;
-
-        return new UserDto(
-                user.getId(),
-                user.getUsername(),
-                user.getEmail(),
-                user.getFullName(),
-                user.getPhone(),
-                user.getRole()
-        );
     }
 }

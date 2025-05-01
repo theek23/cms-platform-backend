@@ -13,4 +13,5 @@ public class MediaDto {
     private String url;
     private String type;
     private Long size;
+    private UserDto userDto;
 }
