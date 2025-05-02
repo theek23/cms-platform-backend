@@ -8,6 +8,10 @@ import com.cms.platform.backend.repository.MediaRepository;
 import com.cms.platform.backend.service.MediaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
@@ -69,10 +73,17 @@ public class MediaServiceImpl implements MediaService {
     }
 
     @Override
-    public List<MediaDto> getMediaByUser(User user) {
-        return mediaRepository.findByUserId(user.getId()).stream()
-                .map(m -> new MediaDto(m.getId(), m.getUrl(), m.getType().toString(), m.getSize(), toDto(m.getUser())))
-                .collect(Collectors.toList());
+    public Page<MediaDto> getMediaByUser(User user,int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "uploadedAt"));
+        Page<Media> mediaPage = mediaRepository.findByUserId(user.getId(), pageable);
+
+        return mediaPage.map(m -> new MediaDto(
+                m.getId(),
+                m.getUrl(),
+                m.getType().toString(),
+                m.getSize(),
+                toDto(m.getUser())
+        ));
     }
 
     @Override
