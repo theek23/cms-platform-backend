@@ -8,6 +8,10 @@ import com.cms.platform.backend.repository.MediaRepository;
 import com.cms.platform.backend.service.MediaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
@@ -33,24 +37,30 @@ public class MediaServiceImpl implements MediaService {
     @Override
     public MediaDto uploadMedia(MultipartFile file, User user) {
         try {
-            String key = UUID.randomUUID() + "_" + file.getOriginalFilename();
+            // Create folder path using userId
+            String folderPath = user.getId().toString() + "/";
+            String key = folderPath + UUID.randomUUID() + "_" + file.getOriginalFilename();
 
+            // Create the PutObjectRequest with the full path
             PutObjectRequest putRequest = PutObjectRequest.builder()
                     .bucket(bucket)
                     .key(key)
                     .contentType(file.getContentType())
                     .build();
 
+            // Upload file to S3
             s3Client.putObject(putRequest, RequestBody.fromBytes(file.getBytes()));
 
+            // Get the file URL
             String fileUrl = s3Client.utilities().getUrl(GetUrlRequest.builder()
                     .bucket(bucket)
                     .key(key)
                     .build()).toExternalForm();
 
+            // Save media metadata to database
             Media media = new Media();
             media.setUrl(fileUrl);
-            media.setType(MediaType.IMAGE); // You can detect this dynamically
+            media.setType(MediaType.IMAGE);
             media.setSize(file.getSize());
             media.setUser(user);
             mediaRepository.save(media);
@@ -63,10 +73,17 @@ public class MediaServiceImpl implements MediaService {
     }
 
     @Override
-    public List<MediaDto> getMediaByUser(User user) {
-        return mediaRepository.findByUserId(user.getId()).stream()
-                .map(m -> new MediaDto(m.getId(), m.getUrl(), m.getType().toString(), m.getSize(), toDto(m.getUser())))
-                .collect(Collectors.toList());
+    public Page<MediaDto> getMediaByUser(User user,int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "uploadedAt"));
+        Page<Media> mediaPage = mediaRepository.findByUserId(user.getId(), pageable);
+
+        return mediaPage.map(m -> new MediaDto(
+                m.getId(),
+                m.getUrl(),
+                m.getType().toString(),
+                m.getSize(),
+                toDto(m.getUser())
+        ));
     }
 
     @Override
