@@ -1,0 +1,24 @@
+package com.cms.platform.backend.entity.enums;
+
+public enum SiteCategory {
+    BUSINESS,
+    ECOMMERCE,
+    PORTFOLIO,
+    BLOG,
+    NEWS_AND_MEDIA,
+    EDUCATIONAL,
+    NONPROFIT,
+    ENTERTAINMENT,
+    SOCIAL_MEDIA,
+    PERSONAL,
+    LANDING_PAGE,
+    MEMBERSHIP,
+    COMMUNITY,
+    DIRECTORY_AND_LISTING,
+    GOVERNMENT,
+    HEALTH_AND_FITNESS,
+    TRAVEL,
+    TECHNOLOGY,
+    REAL_ESTATE,
+    FINANCE
+}

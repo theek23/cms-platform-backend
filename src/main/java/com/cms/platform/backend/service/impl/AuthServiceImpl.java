@@ -25,9 +25,10 @@ public class AuthServiceImpl implements AuthService {
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setRole(request.getRole());
         userRepository.save(user);
-        String token = jwtProvider.generateToken(user.getEmail());
-        return new AuthResponse(token, new UserDto(user.getId(), user.getUsername(), user.getEmail(), user.getRole()));
+        String token = jwtProvider.generateToken(user);
+        return new AuthResponse(token, new UserDto(user.getId(), user.getUsername(), user.getEmail(),user.getFullName(), user.getPhone(), user.getRole()));
     }
 
     @Override
@@ -37,7 +38,7 @@ public class AuthServiceImpl implements AuthService {
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new RuntimeException("Invalid credentials");
         }
-        String token = jwtProvider.generateToken(user.getEmail());
-        return new AuthResponse(token, new UserDto(user.getId(), user.getUsername(), user.getEmail(), user.getRole()));
+        String token = jwtProvider.generateToken(user);
+        return new AuthResponse(token, new UserDto(user.getId(), user.getUsername(), user.getEmail(),user.getFullName(), user.getPhone(), user.getRole()));
     }
 }

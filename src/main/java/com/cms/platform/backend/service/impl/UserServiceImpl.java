@@ -13,19 +13,27 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
-    public UserDto getProfile() {
-        // Mock current user
-        User user = userRepository.findById("").orElseThrow(() -> new RuntimeException("User not found"));
-        return new UserDto(user.getId(), user.getUsername(), user.getEmail(), user.getRole());
+    public UserDto getProfile(UserDto user) {
+        userRepository.findById(user.getId()).orElseThrow(() -> new RuntimeException("User not found"));
+        return new UserDto(user.getId(), user.getUsername(), user.getEmail(),user.getFullName(), user.getPhone(), user.getRole());
     }
 
     @Override
     public UserDto updateProfile(UserDto userDto) {
+        System.out.println("Updating user profile: " + userDto.getFullName());
         User user = userRepository.findById(userDto.getId()).orElseThrow(() -> new RuntimeException("User not found"));
         user.setUsername(userDto.getUsername());
         user.setEmail(userDto.getEmail());
+        user.setFullName(userDto.getFullName());
+        user.setPhone(userDto.getPhone());
         userRepository.save(user);
-        return new UserDto(user.getId(), user.getUsername(), user.getEmail(), user.getRole());
+        return new UserDto(user.getId(), user.getUsername(), user.getEmail(), user.getFullName(), user.getPhone(), user.getRole());
+    }
+
+    @Override
+    public UserDto getUserByEmail(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+        return new UserDto(user.getId(), user.getUsername(), user.getEmail(),user.getFullName(), user.getPhone(), user.getRole());
     }
 }
 

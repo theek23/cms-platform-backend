@@ -27,7 +27,7 @@ public class PostServiceImpl implements PostService {
         post.setContent(dto.getContent());
         post.setSeoTitle(dto.getSeoTitle());
         post.setSeoDescription(dto.getSeoDescription());
-        post.setStatus(Enum.valueOf(com.cms.platform.backend.entity.enums.PostStatus.class, dto.getStatus()));
+        post.setStatus(dto.getStatus());
         post.setSite(site);
         postRepository.save(post);
         return dto;
@@ -36,14 +36,43 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<PostDto> getPostsBySite(UUID siteId) {
         return postRepository.findBySiteId(siteId).stream()
-                .map(post -> new PostDto(post.getId(), post.getTitle(), post.getContent(), post.getSeoTitle(), post.getSeoDescription(), post.getStatus().toString(), post.getSite().getId()))
+                .map(post -> new PostDto(
+                        post.getId(),
+                        post.getTitle(),
+                        post.getContent(),
+                        post.getSeoTitle(),
+                        post.getSeoDescription(),
+                        post.getStatus(),
+                        post.getTags(),
+                        post.getViews(),
+                        post.getThumbnail(),
+                        post.getAuthor(),
+                        post.getCreatedAt(),
+                        post.getUpdatedAt(),
+                        post.getSite().getId()
+                        )
+                )
                 .collect(Collectors.toList());
     }
 
     @Override
     public PostDto getPostById(UUID id) {
         Post post = postRepository.findById(id).orElseThrow(() -> new RuntimeException("Post not found"));
-        return new PostDto(post.getId(), post.getTitle(), post.getContent(), post.getSeoTitle(), post.getSeoDescription(), post.getStatus().toString(), post.getSite().getId());
+        return new PostDto(
+                post.getId(),
+                post.getTitle(),
+                post.getContent(),
+                post.getSeoTitle(),
+                post.getSeoDescription(),
+                post.getStatus(),
+                post.getTags(),
+                post.getViews(),
+                post.getThumbnail(),
+                post.getAuthor(),
+                post.getCreatedAt(),
+                post.getUpdatedAt(),
+                post.getSite().getId()
+        );
     }
 
     @Override
@@ -53,7 +82,7 @@ public class PostServiceImpl implements PostService {
         post.setContent(dto.getContent());
         post.setSeoTitle(dto.getSeoTitle());
         post.setSeoDescription(dto.getSeoDescription());
-        post.setStatus(Enum.valueOf(com.cms.platform.backend.entity.enums.PostStatus.class, dto.getStatus()));
+        post.setStatus(dto.getStatus());
         postRepository.save(post);
         return dto;
     }

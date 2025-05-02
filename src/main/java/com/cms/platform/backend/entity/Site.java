@@ -1,5 +1,6 @@
 package com.cms.platform.backend.entity;
 
+import com.cms.platform.backend.entity.enums.SiteCategory;
 import com.cms.platform.backend.entity.enums.SiteStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -32,6 +33,8 @@ public class Site {
     private String theme;
 
     private SiteStatus status;
+
+    private SiteCategory category;
 
     @Column(name = "is_active")
     private boolean isActive;
