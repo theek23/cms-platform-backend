@@ -1,12 +1,15 @@
 package com.cms.platform.backend.controller;
 
 import com.cms.platform.backend.dto.PostDto;
+import com.cms.platform.backend.entity.User;
 import com.cms.platform.backend.service.PostService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -22,8 +25,21 @@ public class PostController {
     }
 
     @GetMapping
-    public ResponseEntity<List<PostDto>> getPosts(@RequestParam String siteId) {
-        return ResponseEntity.ok(postService.getPostsBySite(UUID.fromString(siteId)));
+    public ResponseEntity<Page<PostDto>> getPostsBySite(
+            @RequestParam String siteId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(postService.getPostsBySite(UUID.fromString(siteId), page, size));
+    }
+
+    @GetMapping("/current")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Page<PostDto>> getPostsByUser(
+            @AuthenticationPrincipal User user,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        System.out.println("Page: " + page + ", Size: " + size);
+        return ResponseEntity.ok(postService.getPostsByUser(user, page, size));
     }
 
     @GetMapping("/{id}")
