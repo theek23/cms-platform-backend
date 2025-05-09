@@ -1,12 +1,18 @@
 package com.cms.platform.backend.service.impl;
 
 import com.cms.platform.backend.dto.PostDto;
+import com.cms.platform.backend.entity.Media;
 import com.cms.platform.backend.entity.Post;
 import com.cms.platform.backend.entity.Site;
+import com.cms.platform.backend.entity.User;
 import com.cms.platform.backend.repository.PostRepository;
 import com.cms.platform.backend.repository.SiteRepository;
 import com.cms.platform.backend.service.PostService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,15 +34,20 @@ public class PostServiceImpl implements PostService {
         post.setSeoTitle(dto.getSeoTitle());
         post.setSeoDescription(dto.getSeoDescription());
         post.setStatus(dto.getStatus());
+        post.setThumbnail(dto.getThumbnail());
+        post.setAuthor(dto.getAuthor());
+        post.setTags(dto.getTags());
+        post.setViews(dto.getViews());
         post.setSite(site);
         postRepository.save(post);
         return dto;
     }
 
     @Override
-    public List<PostDto> getPostsBySite(UUID siteId) {
-        return postRepository.findBySiteId(siteId).stream()
-                .map(post -> new PostDto(
+    public Page<PostDto> getPostsBySite(UUID siteId,int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "uploadedAt"));
+        Page<Post> postPage = postRepository.findBySiteId(siteId, pageable);
+        return postPage.map(post -> new PostDto(
                         post.getId(),
                         post.getTitle(),
                         post.getContent(),
@@ -50,9 +61,28 @@ public class PostServiceImpl implements PostService {
                         post.getCreatedAt(),
                         post.getUpdatedAt(),
                         post.getSite().getId()
-                        )
-                )
-                .collect(Collectors.toList());
+                ));
+    }
+
+    @Override
+    public Page<PostDto> getPostsByUser(User user, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "updatedAt"));
+        Page<Post> postPage = postRepository.findByUserId(user.getId(), pageable);
+        return postPage.map(post -> new PostDto(
+                post.getId(),
+                post.getTitle(),
+                post.getContent(),
+                post.getSeoTitle(),
+                post.getSeoDescription(),
+                post.getStatus(),
+                post.getTags(),
+                post.getViews(),
+                post.getThumbnail(),
+                post.getAuthor(),
+                post.getCreatedAt(),
+                post.getUpdatedAt(),
+                post.getSite().getId()
+        ));
     }
 
     @Override
